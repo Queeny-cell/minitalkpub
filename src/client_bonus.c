@@ -28,7 +28,19 @@ static void	ft_send_bits(int pid, char i)
 			kill(pid, SIGUSR2);
 		bit++;
 		while(global_bit == 0)
-			usleep(200);
+			pause();
+	}
+}
+
+static void	ft_send_int(int pid, unsigned int n)
+{
+	int	i;
+
+	i = 0;
+	while (i < 4)
+	{
+		ft_send_bits(pid, (n >> (i * 8)) & 0xFF);
+		i++;
 	}
 }
 
@@ -49,11 +61,14 @@ int	main(int argc, char **argv)
 {
 	int	pid;
 	int	i;
+	int	len;
 
 	i = 0;
+	len = 0;
 	if (argc == 3)
 	{
 		pid = ft_atoi(argv[1]);
+		len = ft_strlen(argv[2] + 1);
 		signal(SIGUSR1, &ft_sigprint);
 		signal(SIGUSR2, &ft_sigprint);
 
@@ -71,6 +86,7 @@ int	main(int argc, char **argv)
 		ft_printf("Error\n");
 		return (1);
 	}
+	ft_send_int(pid, len);
 	ft_send_str(pid, argv[2]);
 		/* while (1)
 			sleep(1); */
