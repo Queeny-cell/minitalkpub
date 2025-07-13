@@ -6,7 +6,7 @@
 /*   By: mapodevi <mapodevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:08:23 by mapodevi          #+#    #+#             */
-/*   Updated: 2025/07/13 15:31:37 by mapodevi         ###   ########.fr       */
+/*   Updated: 2025/07/13 15:38:53 by mapodevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ static void	ft_handle_msg(int *len, int *received, int *state, char **msg, int b
 void	ft_handler(int signal, siginfo_t *info, void *context)
 {
 	static int	bit;
+	static int	byte;
 	static int	state;
 	static int	len;
 	static int	received;
