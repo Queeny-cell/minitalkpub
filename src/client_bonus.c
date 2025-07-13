@@ -13,7 +13,6 @@ void	ft_sigprint(int sig)
 	}
 }
 
-
 static void	ft_send_bits(int pid, char i)
 {
 	int	bit;
@@ -31,19 +30,18 @@ static void	ft_send_bits(int pid, char i)
 			pause();
 	}
 }
-
-/* static void	ft_send_int(int pid, unsigned int n)
+static void	ft_send_len(int pid, int len)
 {
 	int	i;
 
-	i = 0;
+	i = 0; //metre i++ avant ?
 	while (i < 4)
 	{
-		ft_send_bits(pid, (n >> (i * 8)) & 0xFF);
+		char byte = (len >> (i * 8)) & 0xFF;
+		ft_send_bits(pid, byte);
 		i++;
 	}
-} */
-
+}
 static void	ft_send_str(int pid, char *str)
 {
 	int	i;
@@ -60,35 +58,26 @@ static void	ft_send_str(int pid, char *str)
 int	main(int argc, char **argv)
 {
 	int	pid;
-/* 	int	i;
+	int	i;
 	int	len;
+	char	*msg;
 
 	i = 0;
-	len = 0; */
+	len = 0;
 	if (argc == 3)
 	{
 		pid = ft_atoi(argv[1]);
-		// len = ft_strlen(argv[2] + 1);
+		msg = argv[2];
+		len = ft_strlen(msg);
 		signal(SIGUSR1, &ft_sigprint);
 		signal(SIGUSR2, &ft_sigprint);
-
-		/* while (argv[2][i] != '\0')
-		{
-			signal(SIGUSR1, ft_sigprint); //ft_sigprint == gestionnaire de signaux 
-			signal(SIGUSR2, ft_sigprint);
-			ft_send_bits(pid, argv[2][i]);
-			i++;
-		}
-		ft_send_bits(pid, '\n'); */
 	}
 	else
 	{
 		ft_printf("Error\n");
 		return (1);
 	}
-	// ft_send_int(pid, len);
+	ft_send_len(pid, len);
 	ft_send_str(pid, argv[2]);
-		/* while (1)
-			sleep(1); */
 	return (0);
 }
