@@ -6,7 +6,7 @@
 /*   By: mapodevi <mapodevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:08:23 by mapodevi          #+#    #+#             */
-/*   Updated: 2025/07/13 15:15:57 by mapodevi         ###   ########.fr       */
+/*   Updated: 2025/07/13 15:31:37 by mapodevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,26 +116,32 @@ static void	ft_handle_msg(int *len, int *received, int *state, char **msg, int b
 
 void	ft_handler(int signal, siginfo_t *info, void *context)
 {
-	(void)context;
-	static int bit, byte, state, len, received;
-	static char *msg;
+	static int	bit;
+	static int	state;
+	static int	len;
+	static int	received;
+	static char	*msg;
 
-	if (signal == SIGUSR1) byte |= (1 << bit);
-	else if (signal == SIGUSR2) byte &= ~(1 << bit);
+	(void)context;
+	if (signal == SIGUSR1)
+		byte |= (1 << bit);
+	else if (signal == SIGUSR2)
+		byte &= ~(1 << bit);
 	if (++bit == 8)
 	{
-		if (state == 0) ft_handle_len(&len, &byte, &received, &state, &msg);
-		else ft_handle_msg(&len, &received, &state, &msg, byte, info->si_pid);
+		if (state == 0)
+			ft_handle_len(&len, &byte, &received, &state, &msg);
+		else
+			ft_handle_msg(&len, &received, &state, &msg, byte, info->si_pid);
 		bit = 0;
 		byte = 0;
 	}
 	kill(info->si_pid, SIGUSR1);
 }
 
-
 int	main(int argc, char **argv)
 {
-	int	pid;
+	int					pid;
 	struct sigaction	sig;
 
 	(void)argv;
