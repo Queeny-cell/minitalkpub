@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapodevi <mapodevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marine <marine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:08:23 by mapodevi          #+#    #+#             */
-/*   Updated: 2025/07/13 15:38:53 by mapodevi         ###   ########.fr       */
+/*   Updated: 2025/07/18 20:34:18 by marine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,69 @@
 	}
 	kill(info->si_pid, SIGUSR1);
 } */
-static void	ft_init_msg(int *len, char **msg)
+
+/* void	ft_handler(int signal, siginfo_t *info, void *context)
+{
+	(void)context;
+
+	static int		bit = 0;
+	static int		byte = 0;
+	static int		state = 0;
+	static int		len = 0;
+	static char		*msg = NULL;
+	static int		received_chars = 0;
+
+	if (signal == SIGUSR1)
+		byte |= (1 << bit);
+	else if (signal == SIGUSR2)
+		byte &= ~(1 << bit);
+	bit++;
+
+	if (bit == 8)
+	{
+		if (state == 0)
+		{
+			len |= (byte << (received_chars * 8));
+			received_chars++;
+			if (received_chars == 4)
+			{
+				if (len <= 0 || len > 1000000)
+				{
+					ft_printf("Invalid len: %d\n", len);
+					exit(1);
+				}
+				msg = malloc(len + 1);
+				if (!msg)
+				{
+					ft_printf("Malloc failed\n");
+					exit(1);
+				}
+				msg[len] = '\0';
+				state = 1;
+				received_chars = 0;
+			}
+		}
+		else if (state == 1)
+		{
+			msg[received_chars++] = byte;
+			if (received_chars == len)
+			{
+				// ft_printf("%s\n", msg);
+				write(1, msg, len);
+				kill(info->si_pid, SIGUSR2);
+				free(msg);
+				msg = NULL;
+				len = 0;
+				state = 0;
+				received_chars = 0;
+			}
+		}
+		bit = 0;
+		byte = 0;
+	}
+	kill(info->si_pid, SIGUSR1);
+} */
+/*static void	ft_init_msg(int *len, char **msg)
 {
 	if (*len <= 0 || *len > 1000000)
 	{
@@ -136,6 +198,65 @@ void	ft_handler(int signal, siginfo_t *info, void *context)
 			ft_handle_msg(&len, &received, &state, &msg, byte, info->si_pid);
 		bit = 0;
 		byte = 0;
+	}
+	kill(info->si_pid, SIGUSR1);
+}*/
+static void	ft_init_msg(t_static *data)
+{
+	if (data->len <= 0 || data->len > 1000000)
+	{
+		ft_printf("Invalid len: %d\n", data->len);
+		exit(1);
+	}
+	data->msg = malloc(data->len + 1);
+	if (!data->msg)
+	{
+		ft_printf("Malloc failed\n");
+		exit(1);
+	}
+	data->msg[data->len] = '\0';
+}
+static void	ft_handle_len(t_static *data)
+{
+	data->len |= (data->byte << (data->received * 8));
+	if (++data->received == 4)
+	{
+		ft_init_msg(data);
+		data->state = 1;
+		data->received = 0;
+	}
+}
+static void	ft_handle_msg(t_static *data, pid_t pid)
+{
+	data->msg[data->received++] = data->byte;
+	if (data->received == data->len)
+	{
+		write(1, data->msg, data->len);
+		kill(pid, SIGUSR2);
+		free(data->msg);
+		data->msg = NULL;
+		data->len = 0;
+		data->state = 0;
+		data->received = 0;
+	}
+}
+void	ft_handler(int signal, siginfo_t *info, void *context)
+{
+	static t_static	data;
+
+	(void)context;
+	if (signal == SIGUSR1)
+		data.byte |= (1 << data.bit);
+	else if (signal == SIGUSR2)
+		data.byte &= ~(1 << data.bit);
+	if (++data.bit == 8)
+	{
+		if (data.state == 0)
+			ft_handle_len(&data);
+		else
+			ft_handle_msg(&data, info->si_pid);
+		data.bit = 0;
+		data.byte = 0;
 	}
 	kill(info->si_pid, SIGUSR1);
 }

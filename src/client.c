@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapodevi <mapodevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marine <marine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:07:52 by mapodevi          #+#    #+#             */
-/*   Updated: 2025/07/13 15:09:44 by mapodevi         ###   ########.fr       */
+/*   Updated: 2025/07/18 20:34:59 by marine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,9 @@ static void	ft_send_str(int pid, char *str)
 int	main(int argc, char **argv)
 {
 	int		pid;
-	int		i;
 	int		len;
 	char	*msg;
 
-	i = 0;
 	len = 0;
 	if (argc == 3)
 	{
