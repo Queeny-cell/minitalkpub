@@ -6,7 +6,7 @@
 /*   By: marine <marine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 15:32:34 by mapodevi          #+#    #+#             */
-/*   Updated: 2025/07/18 20:33:18 by marine           ###   ########.fr       */
+/*   Updated: 2025/07/18 20:42:44 by marine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 
 typedef struct s_static
 {
-	int	bit;
-	int	byte;
-	int	state;
-	int	len;
-	int	received;
+	int		bit;
+	int		byte;
+	int		state;
+	int		len;
+	int		received;
 	char	*msg;
-} t_static;
+}	t_static;
 
 #endif
