@@ -6,7 +6,7 @@
 /*   By: marine <marine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:07:52 by mapodevi          #+#    #+#             */
-/*   Updated: 2025/07/18 20:34:59 by marine           ###   ########.fr       */
+/*   Updated: 2025/07/21 18:45:23 by marine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	main(int argc, char **argv)
 	char	*msg;
 
 	len = 0;
-	if (argc == 3)
+	if (argc == 3 && argv[2])
 	{
 		pid = ft_atoi(argv[1]);
 		msg = argv[2];

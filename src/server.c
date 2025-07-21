@@ -6,17 +6,18 @@
 /*   By: marine <marine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:08:23 by mapodevi          #+#    #+#             */
-/*   Updated: 2025/07/18 20:42:07 by marine           ###   ########.fr       */
+/*   Updated: 2025/07/21 18:31:32 by marine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minitalk.h"
 
-static void	ft_init_msg(t_static *data)
+static void	ft_init_msg(t_static *data, pid_t pid)
 {
 	if (data->len <= 0 || data->len > 1000000)
 	{
 		ft_printf("Invalid len: %d\n", data->len);
+		kill(pid, SIGUSR2);
 		exit(1);
 	}
 	data->msg = malloc(data->len + 1);
@@ -28,12 +29,12 @@ static void	ft_init_msg(t_static *data)
 	data->msg[data->len] = '\0';
 }
 
-static void	ft_handle_len(t_static *data)
+static void	ft_handle_len(t_static *data, pid_t pid)
 {
 	data->len |= (data->byte << (data->received * 8));
 	if (++data->received == 4)
 	{
-		ft_init_msg(data);
+		ft_init_msg(data, pid);
 		data->state = 1;
 		data->received = 0;
 	}
@@ -66,7 +67,7 @@ void	ft_handler(int signal, siginfo_t *info, void *context)
 	if (++data.bit == 8)
 	{
 		if (data.state == 0)
-			ft_handle_len(&data);
+			ft_handle_len(&data, info->si_pid);
 		else
 			ft_handle_msg(&data, info->si_pid);
 		data.bit = 0;
